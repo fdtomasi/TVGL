@@ -15,6 +15,6 @@ lamb = 2.5
 beta = 12
 lengthOfSlice = 10
 thetaSet = tvgl.TVGL(data, lengthOfSlice, lamb, beta, indexOfPenalty = 3, verbose=True)
-print thetaSet
+print(thetaSet)
 
 

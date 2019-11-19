@@ -15,14 +15,14 @@ import time
 def timing_set(center, samplesPerStep_left, count_left, samplesPerStep_right, count_right ):
     time_set = []
     count_left = min(count_left, center/samplesPerStep_left)
-    print 'left timesteps: = ', count_left
+    print('left timesteps: = ', count_left)
     start = max(center- samplesPerStep_left*(count_left), 0)
     for i in range(count_left):
         time_interval = [start, start + samplesPerStep_left -1]
         time_set.append(time_interval)
         start = start + samplesPerStep_left
     count_right = min(count_right, 245/samplesPerStep_left)
-    print 'right timesteps: = ', count_right
+    print('right timesteps: = ', count_right)
     for i in range(count_right):
         time_interval = [start, start + samplesPerStep_right -1]
         time_set.append(time_interval)
@@ -111,7 +111,7 @@ if set_length == 1:
         beta_set = [10.0]
 #        beta_set = [1.5]
     else:
-        print 'kernel = ', use_kernel, 'beta is kernel width'
+        print('kernel = ', use_kernel, 'beta is kernel width')
         beta_set  = [7.0] # kernel_width
     if cov_mode == 'Syn':
         alpha_set = [aa]
@@ -126,26 +126,26 @@ else:
     if use_kernel == False:
         beta_set = np.logspace(0, 1.3, set_length)
     else:
-        print 'kernel = ', use_kernel, 'beta is kernel width'
+        print('kernel = ', use_kernel, 'beta is kernel width')
         interval = min(timeShift/set_length,5)
         beta_set = np.arange(1,set_length*interval, interval)
          
 
 
 if index_penalty == 1:
-    print 'Use l-1 penalty function'
+    print('Use l-1 penalty function')
     from inferGraph1 import *
 elif index_penalty == 2:
-    print 'Use l-2 penalty function'
+    print('Use l-2 penalty function')
     from inferGraph2 import *
 elif index_penalty == 3:
-    print 'Use laplacian penalty function'
+    print('Use laplacian penalty function')
     from inferGraph3 import *
 elif index_penalty == 4:
-    print 'Use l-inf penalty function'
+    print('Use l-inf penalty function')
     from inferGraph4 import *
 else:
-    print 'Use perturbation node penalty function'
+    print('Use perturbation node penalty function')
     from inferGraphPN import *
 
 
@@ -164,7 +164,7 @@ def genCovariace(size):
             S[EI.GetSrcNId(), EI.GetDstNId()] = 0.6
         S =  S + S.T + S.max()*np.matrix(np.eye(size))
     if itn == MaxIter:
-        print 'fail to find an invertible sparse inverse covariance matrix'
+        print('fail to find an invertible sparse inverse covariance matrix')
     S = np.asarray(S)
     return S
     
@@ -206,7 +206,7 @@ def genMulCov(size, numberOfCov, low, upper, mode, portion = 0.05):
                 minEVal_set.append(alg.eigvalsh(S)[0])
             S_init = S
         elif mode == 3: #'laplacian'
-            ind1 = range(m)
+            ind1 = list(range(m))
             ind2 = np.random.permutation(m)
             S = np.copy(S_init)
             S[ind1, :] = S[ind2, :]            
@@ -264,7 +264,7 @@ def indicesOfExtremeValue(arr, set_length, choice):
     elif (choice == 'min'):
         index = np.argmin(arr)
     else:
-        print 'invalid argument, choose max or min'
+        print('invalid argument, choose max or min')
             
     index_x = index/set_length
     index_y = index - (index_x)*set_length
@@ -375,7 +375,7 @@ def solveProblem(gvx, index_penalty, cov_mode, alpha, beta, timesteps, timeShift
 #    gvx.Solve()
     #gvx.Solve( NumProcessors = 1, MaxIters = 3)
     end = time.time() - t
-    print 'time span = ',end
+    print('time span = ',end)
     return gvx, empCov_set
 
 def genGraph(S_actual, S_est, S_previous, empCov_set, nodeID, e1, e2, e3, e4, display = False):
@@ -404,10 +404,10 @@ def genGraph(S_actual, S_est, S_previous, empCov_set, nodeID, e1, e2, e3, e4, di
     display = False
     if display == True:
         if (nodeID >timeShift -10) and (nodeID < timeShift + 10):
-            print 'nodeID = ', nodeID
-            print 'S_true = ', S_actual,'\nS_est', S_est
+            print('nodeID = ', nodeID)
+            print('S_true = ', S_actual,'\nS_est', S_est)
 #            print 'S_error = ',S_actual - S_est, '\n its Fro error = ', alg.norm(S_actual - S_est, 'fro')
-            print 'D = ',D,'T = ', T,'TandD = ', TandD,'K = ', K,'P = ', P,'R = ', R,'Score = ', 2* P*R/(P+R)
+            print('D = ',D,'T = ', T,'TandD = ', TandD,'K = ', K,'P = ', P,'R = ', R,'Score = ', 2* P*R/(P+R))
             
     return e1, e2, e3, e4
 #--------------------------------------------- End Defining functions -------------------------------------- 
@@ -433,7 +433,7 @@ if cov_mode == 'Syn':
         Data_type = cov_mode + '%s'%(cov_mode_number)
         S_set, Cov_set = genMulCov(size, numberOfCov, low, upper, cov_mode_number)
     Data_type = Data_type + '(%s)'%(size)
-    print Data_type
+    print(Data_type)
 else:
     size, timesteps, sample_set_stock, empCov_set_stock = getStocks(time_set, stock_list,'finance.csv')
     Data_type = cov_mode + '(%s)'%(size)
@@ -453,14 +453,14 @@ FroError = []
 Score = []
 AIC = []
 FroThetaDiff = []
-print 'number of samples per time: ', samplesPerStep
+print('number of samples per time: ', samplesPerStep)
 for alpha in alpha_set:
     for beta in beta_set:
-        print 'lambda = %s, beta = %s'%(alpha, beta)
+        print('lambda = %s, beta = %s'%(alpha, beta))
         gvx = TGraphVX()   
         gvx_naive = TGraphVX()
         if cov_mode == 'Stock':
-            print 'analyze stock data'  
+            print('analyze stock data')  
             empCov_set = empCov_set_stock
             sample_set = sample_set_stock  
             empCov_set_naive = empCov_set_stock
@@ -536,7 +536,7 @@ ind = index3
 alpha = alpha_set[index31]
 beta =  beta_set[index32]
 #try:
-x =  range(1,timesteps+1)
+x =  list(range(1,timesteps+1))
 if cov_mode == 'Syn':
     ax1 = pl.subplot(311)    
     pl.title('Results for Local Shift with Perturbed Node Penalty')    
@@ -601,10 +601,10 @@ pl.show()
 #    print 'fail to save plots'
 if set_length > 1:
     #print index1, index11, index12, index2, index21, index22
-    print 'alpha = ', alpha_set[index11], ' beta = ', beta_set[index12], ' FroError = ', FroError[index1]
-    print 'alpha = ', alpha_set[index21], ' beta = ', beta_set[index22], ' Score = ', Score[index2]
-    print 'alpha = ', alpha_set[index31], ' beta = ', beta_set[index32], ' AIC = ', AIC[index3]
-    print 'alpha = ', alpha_set[index41], ' beta = ', beta_set[index42], ' FroThetaDiff = ', FroThetaDiff[index4]
+    print('alpha = ', alpha_set[index11], ' beta = ', beta_set[index12], ' FroError = ', FroError[index1])
+    print('alpha = ', alpha_set[index21], ' beta = ', beta_set[index22], ' Score = ', Score[index2])
+    print('alpha = ', alpha_set[index31], ' beta = ', beta_set[index32], ' AIC = ', AIC[index3])
+    print('alpha = ', alpha_set[index41], ' beta = ', beta_set[index42], ' FroThetaDiff = ', FroThetaDiff[index4])
     
     Fro_error = numpy.reshape(FroError,(set_length, set_length))
     Score = numpy.reshape(Score,(set_length, set_length))
@@ -649,7 +649,7 @@ if set_length > 1:
         pl.colorbar()
         pl.savefig('GridGraph%s'%(set_length))
         pl.show()
-        print ('\nSuceed to save GridGraph%s'%(set_length))
+        print(('\nSuceed to save GridGraph%s'%(set_length)))
     except:
-        print 'fail to save graph'
-print '\nEnd'
+        print('fail to save graph')
+print('\nEnd')

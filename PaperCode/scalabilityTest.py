@@ -4,7 +4,7 @@ from inferGraphScalability import * #USECVX = TRUE, SCS
 import numpy as np
 import numpy.linalg as alg
 import scipy as spy
-import __builtin__
+import builtins
 
 import matplotlib.pylab as pl
 import time
@@ -15,14 +15,14 @@ timeList = [10]
 useCVX = True
 
 np.random.seed(0)
-timingVals = np.zeros([__builtin__.len(sizeList), __builtin__.len(timeList)])
-for sizeTemp in range(__builtin__.len(sizeList)):
-    for timeTemp in range(__builtin__.len(timeList)):
+timingVals = np.zeros([builtins.len(sizeList), builtins.len(timeList)])
+for sizeTemp in range(builtins.len(sizeList)):
+    for timeTemp in range(builtins.len(timeList)):
 
 
         size = sizeList[sizeTemp]
         timesteps = timeList[timeTemp]
-        print "Solving for size", size, ", timesteps ", timesteps
+        print("Solving for size", size, ", timesteps ", timesteps)
 
         samplesPerStep = 10#int(np.log2(size))
         timeShift = timesteps/3 #Number of steps till new covariance matrix appears
@@ -114,7 +114,7 @@ for sizeTemp in range(__builtin__.len(sizeList)):
         	gvx.AddNode(n_id + timesteps)
         	gvx.AddEdge(n_id, n_id+timesteps, Objective=alpha*norm(S,1))
 
-        print "Starting to solve:"
+        print("Starting to solve:")
         t = time.time()
         if(useCVX):
             gvx.Solve( UseADMM = False)
@@ -122,12 +122,12 @@ for sizeTemp in range(__builtin__.len(sizeList)):
             gvx.Solve(Rho = 0.5)#, Verbose=True)
 
         end = time.time() - t
-        print "SOLUTION TIME", end
+        print("SOLUTION TIME", end)
 
         timingVals[sizeTemp][timeTemp] = end
 
 np.set_printoptions(threshold='nan')
-print timingVals
+print(timingVals)
 
 for nodeID in range(timesteps):
     val = gvx.GetNodeValue(nodeID,'S')
